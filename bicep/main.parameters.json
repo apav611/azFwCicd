@@ -1,0 +1,37 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "projectNameFile": {
+            "value": "test-azfw"
+        },
+        "vnetAddressPrefixFile": {
+            "value": "10.55.0.0/16"
+        },
+        "locationFile":{
+            "value": "eastus"
+        },
+        "emailFile":{
+            "value": "adpavlik"
+        },
+        "monNameFile": {
+            "value": "loganalytics-test-azfw"
+        },
+        "afwSKUFile": {
+            "value": "Premium"
+        },
+        "vmPassFile": {
+            "value": "TerriblePassword01"
+        },
+        "vmAdmFile": {
+            "value": "adpavlik"
+        },
+        "vmSizeFile": {
+            "value": "Standard_D2s_v3"
+        },
+        "vmNameFile": {
+            "value": "vm-test-azfw"
+        }
+
+    }
+}

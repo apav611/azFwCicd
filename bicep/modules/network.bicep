@@ -1,57 +1,77 @@
-@description('Virtual network name')
-param virtualNetworkName string = 'vnet${uniqueString(resourceGroup().id)}'
+param projectName string
+param location string
+param vnetAddress string
+param date string 
+param email string
 
-@description('Location for all resources.')
-param location string = resourceGroup().location
-param infraIpGroupName string = '${location}-infra-ipgroup-${uniqueString(resourceGroup().id)}'
-param workloadIpGroupName string = '${location}-workload-ipgroup-${uniqueString(resourceGroup().id)}'
+var firstOutput = split(vnetAddress, '.' )
+var mask1 = firstOutput[0]
+var mask2 = firstOutput[1]
 
-param vnetAddressPrefix string = '10.10.0.0/24'
-param azureFirewallSubnetPrefix string = '10.10.0.0/25'
-param azureFirewallSubnetName string = 'AzureFirewallSubnet'
+var sub1 = '${mask1}.${mask2}.250.0/26'
+var sub2 = '${mask1}.${mask2}.1.0/24'
+var sub3 = '${mask1}.${mask2}.255.0/24'
 
-resource workloadIpGroup 'Microsoft.Network/ipGroups@2022-01-01' = {
-  name: workloadIpGroupName
-  location: location
-  properties: {
-    ipAddresses: [
-      '10.20.0.0/24'
-      '10.30.0.0/24'
-    ]
-  }
-}
 
-resource infraIpGroup 'Microsoft.Network/ipGroups@2022-01-01' = {
-  name: infraIpGroupName
-  location: location
-  properties: {
-    ipAddresses: [
-      '10.40.0.0/24'
-      '10.50.0.0/24'
-    ]
-  }
-}
-
-resource vnet 'Microsoft.Network/virtualNetworks@2022-01-01' = {
-  name: virtualNetworkName
+resource rtDefault 'Microsoft.Network/routeTables@2021-02-01' = {
+  name: '${projectName}-default-rt'
   location: location
   tags: {
-    displayName: virtualNetworkName
+    createdDate: date
+    Owner: email
+  }
+}
+
+resource nsgDefault 'Microsoft.Network/networkSecurityGroups@2021-02-01' = {
+  name: '${projectName}-default-nsg'
+  location: location
+  tags: {
+    createdDate: date
+    Owner: email
+  }
+}
+
+resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-02-01' = {
+  name: '${projectName}-vnet'
+  location: location
+  tags: {
+    createdDate: date
+    Owner: email
   }
   properties: {
     addressSpace: {
       addressPrefixes: [
-        vnetAddressPrefix
+        vnetAddress
       ]
     }
     subnets: [
       {
-        name: azureFirewallSubnetName
+        name: 'WindowsSubnet'
         properties: {
-          addressPrefix: azureFirewallSubnetPrefix
+          addressPrefix: sub2
+          routeTable: {
+            id: rtDefault.id
+         }
+         networkSecurityGroup: {
+          id: nsgDefault.id
+       }
+        }
+      }
+      {
+        name: 'AzureBastionSubnet'
+        properties: {
+          addressPrefix: sub3
+        }
+      }
+      {
+        name: 'AzureFirewallSubnet'
+        properties: {
+          addressPrefix: sub1
         }
       }
     ]
-    enableDdosProtection: false
   }
 }
+
+output net string = virtualNetwork.id
+output rt string = rtDefault.name
