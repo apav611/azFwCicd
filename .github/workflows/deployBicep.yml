@@ -11,8 +11,10 @@ jobs:
   # This workflow contains a single job called "build-and-deploy"
   build-and-deploy:
     runs-on: ubuntu-latest
-    checkout: self
     steps:
+    - checkout: self
+
+      # Log into Azure
     - name: Checkout code
       uses: actions/checkout@v2
 
