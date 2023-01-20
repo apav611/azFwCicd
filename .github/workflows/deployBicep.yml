@@ -12,7 +12,6 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-    - checkout: self
 
       # Log into Azure
       uses: actions/checkout@master
