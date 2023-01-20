@@ -1,42 +1,36 @@
-# Pipeline validates Bicep template with test kit
-# If that passes, enters deploy stage
+# name of the workflow
+name: Deploy Bicep
 
-trigger:
-  paths:
-    include:
-    - BicepAFW
-    - BicepAFW\Modules
+# trigger the workflow on push or pull request to the main branch
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
-pool:
-  vmImage: windows-latest
+# allows you to run this workflow manually from the Actions tab
+# https://docs.github.com/en/actions/managing-workflow-runs/manually-running-a-workflow
+workflow_dispatch:
 
-stages:
-  - stage: Test
-    jobs:
-      - job: 'testBicep'
-        steps:
-          - task: RunARMTTKTests@1
-            inputs:
-              templatelocation: '$(System.DefaultWorkingDirectory)\BicepAFW'
-              resultLocation: '$(System.DefaultWorkingDirectory)\BtestResults'
-              allTemplatesMain: true
-          
-          - task: PublishTestResults@2
-            condition: always()
-            inputs:
-              testResultsFormat: 'NUnit'
-              testResultsFiles: '$(System.DefaultWorkingDirectory)\BtestResults\*-armttk.xml'
-              
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
 
-  - stage: Deploy
-    dependsOn: Test
-    jobs:
-      - job: "deployBicep"
-        steps:
-          - task: AzurePowerShell@5
-            inputs:
-              azureSubscription: 'YOUR SUB'
-              ScriptType: 'InlineScript'
-              Inline: 'New-AzResourceGroupDeployment -Name BicepAFWDeployment -ResourceGroupName rg_bicepafw -TemplateFile ".\BicepAFW\main.bicep" -TemplateParameterFile ".\BicepAFW\main.parameters.json"'
-              FailOnStandardError: true
-              azurePowerShellVersion: 'LatestVersion'
+      # Checkout code
+    - uses: actions/checkout@main
+
+      # Log into Azure
+    - uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # Deploy Bicep file
+    - name: deploy
+      uses: azure/arm-deploy@v1
+      with:
+        subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
+        resourceGroupName: ${{ secrets.AZURE_RG }}
+        template: ./main.bicep
+        parameters: ./main.parameters.json
+        failOnStdErr: false
