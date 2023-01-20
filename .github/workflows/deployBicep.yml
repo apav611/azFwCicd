@@ -10,9 +10,8 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     steps:
-
-      # Checkout code
-    - checkout: self
+    - name: Checkout code
+      uses: actions/checkout@v2
 
       # Log into Azure
     - uses: azure/login@v1
