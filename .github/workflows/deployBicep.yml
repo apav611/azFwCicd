@@ -7,8 +7,11 @@ on:
     branches: [ main ]
 
 jobs:
+  # Deploy Bicep file
+  # This workflow contains a single job called "build-and-deploy"
   build-and-deploy:
     runs-on: ubuntu-latest
+    checkout: self
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
