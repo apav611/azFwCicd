@@ -1,9 +1,5 @@
 param projectName string
 
-
-
-
-
 var afwPolRuleName = '${projectName}-afw-pol-rules'
 var afwPolName = '${projectName}-afw-pol'
 
