@@ -15,8 +15,7 @@ jobs:
     - checkout: self
 
       # Log into Azure
-    - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@master
 
       # Log into Azure
     - uses: azure/login@v1
