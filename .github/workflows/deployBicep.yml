@@ -5,8 +5,6 @@ name: Deploy Bicep
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
   build-and-deploy:
@@ -26,7 +24,7 @@ jobs:
       uses: azure/arm-deploy@v1
       with:
         subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
-        resourceGroupName: ${{ secrets.AZURE_RG }}
+        resourceGroupName: ${{ secrets.AZFW_RG }}
         template: ./main.bicep
         parameters: ./main.parameters.json
         failOnStdErr: false
