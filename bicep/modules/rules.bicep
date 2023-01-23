@@ -36,6 +36,34 @@ resource azFWPolRule 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@20
           }
         ]
       }
+      // add more rule collections here
+      {
+        name: 'test-collection2'
+        priority: 200
+        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+        action: {
+          type: 'Deny'
+        }
+        rules: [
+          {
+            description: 'Testing Rule'
+            name: 'Deny_Azure'
+            ruleType: 'ApplicationRule'
+            protocols: [
+              {
+                port: 443
+                protocolType: 'Https'
+              }
+            ]
+            targetFqdns: [
+              'www.google.com'
+            ]
+            sourceAddresses: [
+              '*' 
+            ]
+          }
+        ]
+      }
     ]
   }
 }
