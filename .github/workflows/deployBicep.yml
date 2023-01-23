@@ -16,7 +16,7 @@ jobs:
       # Log into Azure
     - uses: actions/checkout@main
       with:
-        repository: apav611/azfw-bicep
+        branch: main
 
       # Log into Azure
     - uses: azure/login@v1
