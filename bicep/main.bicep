@@ -11,7 +11,7 @@ param vmAdmFile string
 param vmSizeFile string
 param vmNameFile string
 
-module monMDL 'Modules/monitor.bicep' = {
+module monMDL 'modules/monitor.bicep' = {
   name: 'mon-deploy'
   params: {
     location: locationFile
@@ -21,7 +21,7 @@ module monMDL 'Modules/monitor.bicep' = {
   }
 }
 
-module vnetMDL 'Modules/network.bicep' = {
+module vnetMDL 'modules/network.bicep' = {
   name: 'vnet-deploy'
   params: {
     projectName: projectNameFile
@@ -32,7 +32,7 @@ module vnetMDL 'Modules/network.bicep' = {
   }
 }
 
-module bstMDL 'Modules/bastion.bicep' = {
+module bstMDL 'modules/bastion.bicep' = {
   name: 'bst-deploy'
   dependsOn: [
     vnetMDL
@@ -46,7 +46,7 @@ module bstMDL 'Modules/bastion.bicep' = {
   }
 }
 
-module afwMDL 'Modules/afw.bicep' = {
+module afwMDL 'modules/afw.bicep' = {
   name: 'afw-deploy'
   dependsOn: [
     vnetMDL
@@ -62,7 +62,7 @@ module afwMDL 'Modules/afw.bicep' = {
   }
 }
 
-module ruleMDL 'Modules/rules.bicep' = {
+module ruleMDL 'modules/rules.bicep' = {
   name: 'rules-deploy'
   dependsOn: [
     afwMDL
@@ -72,7 +72,7 @@ module ruleMDL 'Modules/rules.bicep' = {
   }
 }
 
-module w10MDL 'Modules/w10.bicep' = {
+module w10MDL 'modules/w10.bicep' = {
   name: 'w10-deploy'
   dependsOn: [
     vnetMDL
