@@ -64,6 +64,33 @@ resource azFWPolRule 'Microsoft.Network/firewallPolicies/ruleCollectionGroups@20
           }
         ]
       }
+      {
+        name: 'test-collection3'
+        priority: 300
+        ruleCollectionType: 'FirewallPolicyFilterRuleCollection'
+        action: {
+          type: 'Deny'
+        }
+        rules: [
+          {
+            description: 'Testing Rule'
+            name: 'Deny_Azure'
+            ruleType: 'ApplicationRule'
+            protocols: [
+              {
+                port: 443
+                protocolType: 'Https'
+              }
+            ]
+            targetFqdns: [
+              'www.bing.com'
+            ]
+            sourceAddresses: [
+              '*' 
+            ]
+          }
+        ]
+      }
     ]
   }
 }
